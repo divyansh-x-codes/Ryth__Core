@@ -1,13 +1,3 @@
-/**
- * ==============================================================================
- * RythCore - Stories Component (Stories.jsx)
- * ==============================================================================
- * Features:
- *  1. "Stories for You" Carousel / Feed
- *  2. "Browse by Format": Articles, Videos, Shorts, Podcasts, Interviews, Series
- *  3. "Trending Videos": Interactive video cards with play preview modal
- * ==============================================================================
- */
 
 import { useState } from "react";
 import "../styles/Stories.css";
