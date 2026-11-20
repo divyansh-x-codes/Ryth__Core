@@ -38,7 +38,7 @@ function Home({ stories = [], onNavigate, onOpenWrite, onToggleLike, onToggleBoo
 
   return (
     <div className="home-page">
-      {/* 1. HERO SECTION                                              */}
+      {/* 1. HERO SECTION         */}
       <section className="hero">
         <div className="hero-content">
           <div className="hero-tag">
