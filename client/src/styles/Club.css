@@ -1,0 +1,247 @@
+.club-page {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 10px 0 40px;
+}
+
+.club-hero {
+  text-align: center;
+  padding: 36px 20px;
+  background: linear-gradient(135deg, #090d16, #1e293b);
+  border-radius: 16px;
+  color: white;
+  margin-bottom: 28px;
+}
+
+.club-hero-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid #f59e0b;
+  border-radius: 20px;
+  color: #fbbf24;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+}
+
+.club-hero h1 {
+  font-family: Georgia, serif;
+  font-size: clamp(28px, 3.2vw, 42px);
+  line-height: 1.15;
+  margin: 0 0 14px;
+}
+
+.club-hero h1 em {
+  color: #f59e0b;
+  font-style: normal;
+}
+
+.club-hero p {
+  color: #94a3b8;
+  font-size: 15px;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.subscription-success-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #ecfdf5;
+  border: 1px solid #10b981;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+
+.subscription-success-banner span {
+  font-size: 32px;
+}
+
+.subscription-success-banner strong {
+  display: block;
+  color: #065f46;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.subscription-success-banner p {
+  margin: 0;
+  color: #047857;
+  font-size: 13px;
+}
+
+.club-plans-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin-bottom: 36px;
+}
+
+.plan-card {
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 28px 24px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.plan-card:hover {
+  border-color: #cbd5e1;
+  transform: translateY(-2px);
+}
+
+.plan-card.active {
+  border-color: #f59e0b;
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.12);
+}
+
+.plan-card.featured {
+  background: #f8fafc;
+}
+
+.plan-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.plan-badge.highlight {
+  color: #d97706;
+}
+
+.plan-card h3 {
+  font-size: 22px;
+  color: #0f172a;
+  margin: 0 0 6px;
+}
+
+.plan-desc {
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 20px;
+  min-height: 38px;
+}
+
+.plan-price {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.plan-price .currency {
+  font-size: 22px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.plan-price .amount {
+  font-size: 38px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.plan-price .period {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.plan-perks {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.plan-perks li {
+  font-size: 13px;
+  color: #334155;
+  display: flex;
+  gap: 8px;
+}
+
+.select-plan-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #0f172a;
+  background: white;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.select-plan-btn:hover {
+  background: #0f172a;
+  color: white;
+}
+
+.select-plan-btn.primary {
+  background: #f59e0b;
+  border-color: #f59e0b;
+  color: #0f172a;
+}
+
+.select-plan-btn.primary:hover {
+  background: #d97706;
+  border-color: #d97706;
+  color: white;
+}
+
+.club-features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.feature-item {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.feature-icon {
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+
+.feature-item h4 {
+  font-size: 16px;
+  margin: 0 0 8px;
+  color: #0f172a;
+}
+
+.feature-item p {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.5;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .club-plans-grid {
+    grid-template-columns: 1fr;
+  }
+  .club-features-grid {
+    grid-template-columns: 1fr;
+  }
+}
