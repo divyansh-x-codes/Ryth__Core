@@ -9,7 +9,7 @@ const CATEGORIES = [
   "Health",
   "Culture",
   "Creativity",
-  "Career"
+  "Career",
 ];
 
 function WriteStoryModal({ isOpen, onClose, onStoryCreated }) {
