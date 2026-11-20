@@ -1,0 +1,291 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ENUMS
+
+
+enum StoryVisibility {
+  DRAFT
+  PUBLIC
+  SUBSCRIBERS_ONLY
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+  PENDING
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+
+// 1. USER
+// Better Auth compatible
+
+
+model User {
+  id            String   @id @default(cuid())
+  name          String
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  image         String?
+  role          String   @default("reader")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Authentication relations
+  accounts Account[]
+  sessions Session[]
+
+  // RythCore relations
+  stories       Story[]
+  likes         Like[]
+  bookmarks     Bookmark[]
+  comments      Comment[]
+  subscriptions Subscription[]
+
+  @@index([role])
+  @@map("user")
+}
+
+// 2. SESSION
+
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("session")
+}
+
+// 3. ACCOUNT
+// Google and other login providers
+
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("account")
+}
+
+
+// 4. VERIFICATION
+
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+// 5. CATEGORY
+
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  stories Story[]
+
+  @@map("category")
+}
+
+// 6. STORY
+// Main publishing content
+
+
+model Story {
+  id          Int             @id @default(autoincrement())
+  title       String
+  slug        String          @unique
+  excerpt     String?
+  content     String          @db.Text
+  coverImage  String?
+  visibility  StoryVisibility @default(DRAFT)
+  authorId    String
+  categoryId  Int
+  publishedAt DateTime?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  author   User     @relation(fields: [authorId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
+
+  likes     Like[]
+  bookmarks Bookmark[]
+  comments  Comment[]
+
+  @@index([authorId])
+  @@index([categoryId])
+  @@index([visibility])
+  @@index([publishedAt])
+  @@map("story")
+}
+
+
+// 7. LIKE
+// A user can like a story only once
+
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  storyId   Int
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  story Story @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, storyId])
+  @@index([storyId])
+  @@map("like")
+}
+
+
+// 8. BOOKMARK
+// A user can bookmark a story only once
+
+model Bookmark {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  storyId   Int
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  story Story @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, storyId])
+  @@index([storyId])
+  @@map("bookmark")
+}
+
+
+// 9. COMMENT
+
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String   @db.Text
+  userId    String
+  storyId   Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  story Story @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([storyId])
+  @@map("comment")
+}
+
+
+// 10. SUBSCRIPTION PLAN
+
+
+model SubscriptionPlan {
+  id             Int      @id @default(autoincrement())
+  name           String   @unique
+  description    String?
+  price          Decimal  @db.Decimal(10, 2)
+  durationMonths Int
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  subscriptions Subscription[]
+
+  @@map("subscription_plan")
+}
+
+// 11. SUBSCRIPTION
+
+
+model Subscription {
+  id        Int                @id @default(autoincrement())
+  userId    String
+  planId    Int
+  status    SubscriptionStatus @default(PENDING)
+  startDate DateTime
+  endDate   DateTime
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  user     User             @relation(fields: [userId], references: [id])
+  plan     SubscriptionPlan @relation(fields: [planId], references: [id])
+  payments Payment[]
+
+  @@index([userId])
+  @@index([planId])
+  @@index([status])
+  @@map("subscription")
+}
+
+
+// 12. PAYMENT
+
+
+model Payment {
+  id                Int           @id @default(autoincrement())
+  subscriptionId    Int
+  amount            Decimal       @db.Decimal(10, 2)
+  currency          String        @default("INR")
+  status            PaymentStatus @default(PENDING)
+  paymentProvider   String        @default("razorpay")
+  providerOrderId   String?       @unique
+  providerPaymentId String?       @unique
+  paymentDate       DateTime?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  subscription Subscription @relation(fields: [subscriptionId], references: [id])
+
+  @@index([subscriptionId])
+  @@index([status])
+  @@map("payment")
+}
